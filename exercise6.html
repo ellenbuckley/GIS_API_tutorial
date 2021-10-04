@@ -1,0 +1,106 @@
+<!-- Exercise 6, Written in JavaScript 4.18 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>2D Map</title>
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
+<script src="https://js.arcgis.com/4.21/"></script>
+
+<style>
+
+  html, body, #viewDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+</style>
+  
+  
+
+<script>
+require([
+  "esri/Map",
+  "esri/views/MapView",
+  "esri/WebMap",
+  "esri/widgets/Search",
+  "esri/layers/CSVLayer",
+  "esri/views/SceneView"
+], function(Map, MapView, WebMap, Search, CSVLayer, SceneView) {
+
+  
+  
+
+  
+  var url = "https://github.com/emb4md/GIS_API_tutorial/blob/main/all_mp2020_list.csv"
+  
+  var template = {
+    title: "Melt Ponds 2020",
+    content: "On {date} melt pond found at ( {central_lat} , {central_lon} ) on track {track} {beam}l."
+  };
+
+  var csvLayer = new CSVLayer({
+    url: url,
+    popupTemplate: template,
+    longitudeField: "central_lon",
+    latitudeField: "central_lat",
+    spatialReference: {
+    wkid: 4326
+  }
+  });
+
+  csvLayer.renderer = {
+    type: "simple", // autocasts as new SimpleRenderer()
+    symbol: {
+      type: "point-3d", // autocasts as new PointSymbol3D()
+      // for this symbol we use 2 symbol layers, one for the outer circle
+      symbolLayers: [
+        {
+          type: "icon", // autocasts as new IconSymbol3DLayer()
+          resource: { primitive: "circle" },
+          material: { color: [255, 84, 54, 1] },
+          size: 5
+        },
+
+      ]
+    }
+    
+  
+  };
+  var map = new Map({ //WebMap
+    //portalItem: { // autocasts as new PortalItem
+      //id: "7ec08e5438304dbfa1e26181503e6fa8",
+    basemap:  "topo" // Basemap layer service  
+    
+  });
+
+  
+  
+  var view = new MapView({
+    container: "viewDiv",
+    map: map,
+    zoom: 4,    
+	center:[-90,80]
+  });
+ // view.rotation = 90
+
+  map.add(csvLayer);
+  
+    //Create search widget
+  var searchWidget = new Search({
+    view: view
+  });
+  //Add widget to the UI
+  view.ui.add(searchWidget, "top-right");
+  
+  
+  
+});  
+</script>
+</head>
+<body>
+<div id="viewDiv"></div>
+</body>
+</html>
