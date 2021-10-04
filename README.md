@@ -1,4 +1,4 @@
-## ARCGIS API tutorial
+## ArcGIS API tutorial
 
 
 This is code from the ARCGIS API tutorial. original code for this tutorial from: mbana641
